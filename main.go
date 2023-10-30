@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"text/template"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -26,6 +27,7 @@ func dbConn() (db *sql.DB) {
     return db
 }
 
+var tmpl = template.Must(template.ParseGlob("form/*"))
 
 func Index(w http.ResponseWriter, r *http.Request) {
     db := dbConn()
@@ -47,8 +49,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
         emp.City = city
         res = append(res, emp)
     }
-    
-    http.ServeFile(w, r, "form/index.html")
+    tmpl.ExecuteTemplate(w, "Index", res)
     defer db.Close()
 }
 
@@ -71,13 +72,12 @@ func Show(w http.ResponseWriter, r *http.Request) {
         emp.Name = name
         emp.City = city
     }
-    
-    http.ServeFile(w, r, "form/show.html")
+    tmpl.ExecuteTemplate(w, "Show", emp)
     defer db.Close()
 }
 
 func New(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, "form/new.html")
+    tmpl.ExecuteTemplate(w, "New", nil)
 }
 
 func Edit(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +99,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
         emp.Name = name
         emp.City = city
     }
-    http.ServeFile(w, r, "form/edit.html")
+    tmpl.ExecuteTemplate(w, "Edit", emp)
     defer db.Close()
 }
 
