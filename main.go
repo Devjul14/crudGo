@@ -144,7 +144,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
         panic(err.Error())
     }
     delForm.Exec(emp)
-    log.Println("DELETE")
+    log.Println("DELETE ID: " + emp)
     defer db.Close()
     http.Redirect(w, r, "/", 301)
 }
